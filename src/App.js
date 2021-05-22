@@ -21,19 +21,51 @@ function App() {
     let h1, h2, fh1, fh2;
     let i = 0;
     let answers = [];
-    while (Math.abs(interval[1] - interval[0]) / 2 >= +eps) {
-      ++i;
-      h1 = interval[0] + 0.382 * (interval[1] - interval[0]);
-      h2 = interval[0] + 0.618 * (interval[1] - interval[0]);
-      fh1 = getValue('x', h1, input);
-      fh2 = getValue('x', h2, input);
 
+    h1 = interval[0] + 0.382 * (interval[1] - interval[0]);
+    h2 = interval[0] + 0.618 * (interval[1] - interval[0]);
+    fh1 = getValue('x', h1, input);
+    fh2 = getValue('x', h2, input);
+
+    while (Math.abs(interval[1] - interval[0]) >= +eps) {
+      ++i;
+      if (fh1 > fh2) {
+        interval[0] = h1;
+        h1 = interval[0] + 0.382 * (interval[1] - interval[0]);
+        h2 = interval[0] + 0.618 * (interval[1] - interval[0]);
+        fh2 = getValue('x', h2, input);
+      } else {
+        interval[1] = h2;
+        h1 = interval[0] + 0.382 * (interval[1] - interval[0]);
+        h2 = interval[0] + 0.618 * (interval[1] - interval[0]);
+        fh1 = getValue('x', h1, input);
+      }
+
+      // let h;
+      // let fh;
+      // if (prevHRight !== 0) {
+      //   h = interval[0] + 0.382 * (interval[1] - interval[0]);
+      //   interval[0] = h;
+      //   prevHRight = 0;
+      // } else {
+      //   h = interval[0] + 0.382 * (interval[1] - interval[0]);
+      //   prevHLeft = 0;
+      //   interval[1] = h;
+      // }
+      // fh = getValue('x', h, input);
+
+      // h1 = interval[0] + 0.382 * (interval[1] - interval[0]);
+      // h2 = interval[0] + 0.618 * (interval[1] - interval[0]);
+      // let h = interval[0] + 0.382 * (interval[1] - interval[0]);
+      // let fh = getValue('x', h, input);
+      // fh1 = getValue('x', h1, input);
+      // fh2 = getValue('x', h2, input);
       // console.log(
       //   `h1 : ${h1}, h2: ${h2}, fh1: ${fh1}, fh2: ${fh2}, interval: ${interval}`
       // );
 
-      fh1 > fh2 ? (interval[0] = h1) : (interval[1] = h2);
-      answers.push({ iteration: i, a: interval[0], b: interval[1] });
+      // fh1 > fh2 ? (interval[0] = h1) : (interval[1] = h2);
+      answers.push({ iteration: i, a: interval[0], b: interval[1] /* h1: h1, h2: h2 */, fh1, fh2 });
     }
 
     let x = (interval[0] + interval[1]) / 2;
