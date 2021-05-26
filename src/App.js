@@ -3,12 +3,12 @@ import './App.css';
 // import * as math from 'mathjs';
 
 function App() {
-  const x0 = 1,
-    y0 = 2,
-    y1 = 3;
-  const h = 0.5;
-  const range = [1, 2];
-  const eps = 10 ** -6;
+  const x0 = 0,
+    y0 = 1,
+    y1 = 1;
+  const h = 0.1;
+  const range = [0, 1];
+  const eps = 10 ** -4;
 
   const rengeKytta2 = () => {
     let yArray = [[y0, y1]];
@@ -22,6 +22,7 @@ function App() {
     finalTable.push({ x: x0, y: y0, "y'": y1 });
 
     while (true) {
+      console.log('Шаг: ', newH);
       i++;
       y1Answers.length = 0;
       yAnswers.length = 0;
@@ -48,10 +49,16 @@ function App() {
 
       let isEps = checkEps(yAnswers, y1Answers, eps);
 
+      // if (isEps.flag) {
+      //   break;
+      // }
       if (isEps.flag) {
         break;
       }
 
+      // if (i == 8) {
+      //   break;
+      // }
       newH = newH / 2;
     }
 
@@ -79,20 +86,29 @@ function App() {
   };
 
   function checkEps(answers, answers1, eps) {
+    const n = answers.length;
+    const n1 = answers1.length;
     for (let i = 1; i < answers.length; i++) {
-      if (
-        Math.abs(answers[i][0] - answers1[i * 2][0]) < eps * 3 ||
-        Math.abs(answers[i][1] - answers1[i * 2][1]) < eps * 3
-      ) {
-        return { flag: true };
+      // if (Math.abs(answers[n - 1][0] - answers1[n1 - 1][0]) >= eps * 3) {
+      if (Math.abs(answers[i][0] - answers1[i * 2][0]) >= eps * 3) {
+        return { flag: false };
       }
     }
-    return { flag: false };
+    return { flag: true };
+  }
+
+  function check(answers, eps) {
+    for (let i = 0; i < answers.length; i++) {
+      if (Math.abs(answers[i][0] - answers[i][1]) >= eps * 3) {
+        return false;
+      }
+    }
+    return true;
   }
 
   function getY2(x, y1, y) {
-    // return [y1, (Math.E ** x + y + y1) / 3];
-    return [y1, Math.sin(x * y) + y1];
+    return [y1, (Math.E ** x + y + y1) / 3];
+    // return [y1, Math.sin(x * y) + y1];
   }
 
   function arraySum(first, second) {
