@@ -18,60 +18,58 @@ function App() {
 
   const goldenRatio = eps => {
     let interval = [+range[0], +range[1]];
-    let h1, h2, fh1, fh2;
+    let h, u, fh, fu;
     let i = 0;
     let answers = [];
 
-    h1 = interval[0] + 0.382 * (interval[1] - interval[0]);
-    h2 = interval[0] + 0.618 * (interval[1] - interval[0]);
-    fh1 = getValue('x', h1, input);
-    fh2 = getValue('x', h2, input);
+    h = interval[0] + 0.382 * (interval[1] - interval[0]);
+    u = interval[0] + 0.618 * (interval[1] - interval[0]);
+    fh = getValue('x', h, input);
+    fu = getValue('x', u, input);
 
-    while (Math.abs(interval[1] - interval[0]) >= +eps) {
+    answers.push({
+      a: interval[0],
+      b: interval[1],
+      diff: interval[1] - interval[0],
+      h,
+      u,
+      fh,
+      fu,
+    });
+    // console.log('h1,h2,fh1,fh2: ', h1, h2, fh1, fh2);
+
+    while (Math.abs(interval[1] - interval[0]) > +eps) {
       ++i;
-      if (fh1 > fh2) {
-        interval[0] = h1;
-        h1 = interval[0] + 0.382 * (interval[1] - interval[0]);
-        h2 = interval[0] + 0.618 * (interval[1] - interval[0]);
-        fh2 = getValue('x', h2, input);
+      if (fh < fu) {
+        interval[1] = u;
+        u = h;
+        h = interval[0] + 0.382 * (interval[1] - interval[0]);
+        fu = fh;
+        fh = getValue('x', h, input);
       } else {
-        interval[1] = h2;
-        h1 = interval[0] + 0.382 * (interval[1] - interval[0]);
-        h2 = interval[0] + 0.618 * (interval[1] - interval[0]);
-        fh1 = getValue('x', h1, input);
+        interval[0] = h;
+        h = u;
+        u = interval[0] + 0.618 * (interval[1] - interval[0]);
+        fh = fu;
+        fu = getValue('x', u, input);
       }
 
-      // let h;
-      // let fh;
-      // if (prevHRight !== 0) {
-      //   h = interval[0] + 0.382 * (interval[1] - interval[0]);
-      //   interval[0] = h;
-      //   prevHRight = 0;
-      // } else {
-      //   h = interval[0] + 0.382 * (interval[1] - interval[0]);
-      //   prevHLeft = 0;
-      //   interval[1] = h;
-      // }
-      // fh = getValue('x', h, input);
-
-      // h1 = interval[0] + 0.382 * (interval[1] - interval[0]);
-      // h2 = interval[0] + 0.618 * (interval[1] - interval[0]);
-      // let h = interval[0] + 0.382 * (interval[1] - interval[0]);
-      // let fh = getValue('x', h, input);
-      // fh1 = getValue('x', h1, input);
-      // fh2 = getValue('x', h2, input);
-      // console.log(
-      //   `h1 : ${h1}, h2: ${h2}, fh1: ${fh1}, fh2: ${fh2}, interval: ${interval}`
-      // );
-
-      // fh1 > fh2 ? (interval[0] = h1) : (interval[1] = h2);
-      answers.push({ iteration: i, a: interval[0], b: interval[1] /* h1: h1, h2: h2 */, fh1, fh2 });
+      answers.push({
+        a: interval[0],
+        b: interval[1],
+        diff: interval[1] - interval[0],
+        h,
+        u,
+        fh,
+        fu,
+      });
     }
 
     let x = (interval[0] + interval[1]) / 2;
     let fx = parseFloat(getValue('x', x, input));
 
     console.table(answers);
+    // console.log(answers);
 
     return { x, fx };
   };
